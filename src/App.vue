@@ -1,5 +1,16 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import MsGame from "./components/MsGame.vue";
+</script>
 
-<template></template>
+<template>
+  <div class="content">
+    <MsGame />
+  </div>
+</template>
 
-<style scoped></style>
+<style scoped>
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+}
+</style>
