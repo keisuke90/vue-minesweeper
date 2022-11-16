@@ -1,7 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { slotFlagsText } from "@vue/shared";
+
+interface Props {
+  open: boolean;
+}
+defineProps<Props>();
+</script>
 
 <template>
-  <div class="cell"></div>
+  <div class="cell" :class="{ open: open }"><slot /></div>
 </template>
 
 <style scoped>
@@ -11,5 +18,9 @@
   width: 30px;
   border: 1px solid white;
   background-color: black;
+}
+
+.cell.open {
+  background-color: red;
 }
 </style>
