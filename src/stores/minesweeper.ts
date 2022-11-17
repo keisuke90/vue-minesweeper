@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
-interface Mine {
-  count: number;
+export interface Mine {
+  count: null | number;
   isOpen: boolean;
   isMine: boolean;
   isFlag: boolean;
@@ -20,7 +20,7 @@ export const useMinesweeperStore = defineStore({
   actions: {
     initFeild(): void {
       const mine: Mine = {
-        count: 0,
+        count: null,
         isOpen: false,
         isMine: false,
         isFlag: false,
@@ -32,6 +32,9 @@ export const useMinesweeperStore = defineStore({
         }
         this.field.push(row);
       }
+    },
+    openCell(x: number, y: number): void {
+      console.log(`${x}${y}`);
     },
   },
 });

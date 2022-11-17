@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import type { slotFlagsText } from "@vue/shared";
-
+interface Emits {
+  (event: "leftClick"): void;
+}
 interface Props {
   open: boolean;
 }
 defineProps<Props>();
+const emit = defineEmits<Emits>();
+const leftClick = (): void => {
+  emit("leftClick");
+};
 </script>
 
 <template>
-  <div class="cell" :class="{ open: open }"><slot /></div>
+  <div class="cell" :class="{ open: open }" @click="leftClick"><slot /></div>
 </template>
 
 <style scoped>

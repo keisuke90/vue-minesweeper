@@ -1,20 +1,29 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import MsCell from "./MsCell.vue";
-import { useMinesweeperStore } from "@/stores/miensweeper";
+import { useMinesweeperStore } from "@/stores/minesweeper";
+import type { Mine } from "@/stores/minesweeper";
 
 const miensweeperStore = useMinesweeperStore();
 miensweeperStore.initFeild();
-
-const row = 9;
-const rows = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-let isOpen = ref(true);
+const field = computed((): [Mine[]] => {
+  return miensweeperStore.field;
+});
+const open = (x: number, y: number): void => {
+  miensweeperStore.openCell(x, y);
+};
 </script>
 
 <template>
   <div class="field">
-    <div v-for="cell in rows">
-      <MsCell v-for="cell in rows" :open="isOpen"><span>1</span></MsCell>
+    <div v-for="(rows, y) in field" :key="y">
+      <MsCell
+        v-for="(cell, x) in rows"
+        :key="x"
+        :open="cell.isOpen"
+        @leftClick="open(y, x)"
+        ><span v-if="cell.isOpen">{{ cell.count }}</span></MsCell
+      >
     </div>
   </div>
 </template>
