@@ -1,13 +1,26 @@
 import { defineStore } from "pinia";
 
-export interface Mine {
-  count: null | number;
-  isOpen: boolean;
-  isMine: boolean;
-  isFlag: boolean;
-}
 interface State {
   field: [Mine[]];
+}
+
+export class Mine {
+  private count: null | number;
+  private isOpen: boolean;
+  private isMine: boolean;
+  private isFlag: boolean;
+
+  constructor(
+    count: null | number,
+    isOpen: boolean,
+    isMine: boolean,
+    isFlag: boolean
+  ) {
+    this.count = null;
+    this.isOpen = false;
+    this.isMine = false;
+    this.isFlag = false;
+  }
 }
 
 export const useMinesweeperStore = defineStore({
@@ -19,22 +32,16 @@ export const useMinesweeperStore = defineStore({
   },
   actions: {
     initFeild(): void {
-      const mine: Mine = {
-        count: null,
-        isOpen: false,
-        isMine: false,
-        isFlag: false,
-      };
       for (let y = 0; y < 9; y++) {
         let row = [];
         for (let x = 0; x < 9; x++) {
-          row.push(mine);
+          row.push(new Mine(null, false, false, false));
         }
         this.field.push(row);
       }
     },
     openCell(x: number, y: number): void {
-      console.log(`${x}${y}`);
+      console.log(this.field);
     },
   },
 });
