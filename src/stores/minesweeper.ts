@@ -1,11 +1,5 @@
 import { defineStore } from "pinia";
 
-// export interface Mine {
-//   count: null | number;
-//   isOpen: boolean;
-//   isMine: boolean;
-//   isFlag: boolean;
-// }
 interface State {
   field: [Mine[]];
 }
