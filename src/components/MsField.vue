@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import MsCell from "./MsCell.vue";
+import { useMinesweeperStore } from "@/stores/miensweeper";
+
+const miensweeperStore = useMinesweeperStore();
+miensweeperStore.initFeild();
 
 const row = 9;
 const rows = [1, 2, 3, 4, 5, 6, 7, 8, 9];
