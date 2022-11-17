@@ -5,10 +5,10 @@ interface State {
 }
 
 export class Mine {
-  private count: null | number;
-  private isOpen: boolean;
-  private isMine: boolean;
-  private isFlag: boolean;
+  public count: null | number;
+  public isOpen: boolean;
+  public isMine: boolean;
+  public isFlag: boolean;
 
   constructor(
     count: null | number,
@@ -41,7 +41,7 @@ export const useMinesweeperStore = defineStore({
       }
     },
     openCell(x: number, y: number): void {
-      console.log(this.field);
+      this.field[y][x].isOpen = true;
     },
   },
 });

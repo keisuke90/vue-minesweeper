@@ -12,5 +12,6 @@ import MsGame from "./components/MsGame.vue";
 .content {
   max-width: 640px;
   margin: 0 auto;
+  text-align: center;
 }
 </style>

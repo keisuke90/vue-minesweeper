@@ -21,7 +21,7 @@ const open = (x: number, y: number): void => {
         v-for="(cell, x) in rows"
         :key="x"
         :open="cell.isOpen"
-        @leftClick="open(y, x)"
+        @leftClick="open(x, y)"
         ><span v-if="cell.isOpen">{{ cell.count }}</span></MsCell
       >
     </div>
@@ -32,6 +32,5 @@ const open = (x: number, y: number): void => {
 .field {
   height: 100%;
   width: 100%;
-  background-color: green;
 }
 </style>
