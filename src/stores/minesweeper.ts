@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 
 interface State {
+  height: number;
+  width: number;
   field: [Mine[]];
   game: 0 | 1 | 2 | 3; //0:初期状態,1:Play,2:ゲームオーバー,3:クリア
   mines: number;
@@ -29,6 +31,8 @@ export const useMinesweeperStore = defineStore({
   id: "game",
   state: (): State => {
     return {
+      height: 9,
+      width: 9,
       field: [] as any,
       game: 0,
       mines: 10,
@@ -36,9 +40,9 @@ export const useMinesweeperStore = defineStore({
   },
   actions: {
     initFeild(): void {
-      for (let y = 0; y < 9; y++) {
+      for (let y = 0; y < this.height; y++) {
         let row = [];
-        for (let x = 0; x < 9; x++) {
+        for (let x = 0; x < this.width; x++) {
           row.push(new Mine(null, false, false, false));
         }
         this.field.push(row);
