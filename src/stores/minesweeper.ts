@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 
 interface State {
   field: [Mine[]];
+  game: 0 | 1 | 2 | 3; //0:初期状態,1:Play,2:ゲームオーバー,3:クリア
+  mines: number;
 }
 
 export class Mine {
@@ -28,6 +30,8 @@ export const useMinesweeperStore = defineStore({
   state: (): State => {
     return {
       field: [] as any,
+      game: 0,
+      mines: 10,
     };
   },
   actions: {
@@ -40,8 +44,25 @@ export const useMinesweeperStore = defineStore({
         this.field.push(row);
       }
     },
+    atPoint(x: number, y: number) {
+      return this.field[y][x];
+    },
+    setMine(): void {
+      for (let i = 0; i < this.mines; i++) {
+        while (true) {
+          let x = Math.floor(Math.random() * 9);
+          let y = Math.floor(Math.random() * 9);
+          if (this.atPoint(x, y).isMine === false) {
+            this.atPoint(x, y).isMine = true;
+            break;
+          }
+        }
+      }
+    },
     openCell(x: number, y: number): void {
-      this.field[y][x].isOpen = true;
+      if (!this.atPoint(x, y).isFlag) {
+        this.atPoint(x, y).isOpen = true;
+      }
     },
   },
 });
