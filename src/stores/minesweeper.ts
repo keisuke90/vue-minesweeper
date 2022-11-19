@@ -71,5 +71,10 @@ export const useMinesweeperStore = defineStore({
         this.atPoint(x, y).isOpen = true;
       }
     },
+    flagCell(x: number, y: number): void {
+      if (!this.atPoint(x, y).isOpen) {
+        this.atPoint(x, y).isFlag = true;
+      }
+    },
   },
 });

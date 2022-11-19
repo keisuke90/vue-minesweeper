@@ -12,6 +12,9 @@ const field = computed((): [Mine[]] => {
 const open = (x: number, y: number): void => {
   miensweeperStore.openCell(x, y);
 };
+const flag = (x: number, y: number): void => {
+  miensweeperStore.flagCell(x, y);
+};
 </script>
 
 <template>
@@ -21,7 +24,9 @@ const open = (x: number, y: number): void => {
         v-for="(cell, x) in rows"
         :key="x"
         :open="cell.isOpen"
+        :flag="cell.isFlag"
         @leftClick="open(x, y)"
+        @rightClick="flag(x, y)"
         ><span v-if="cell.isOpen">{{ cell.count }}</span></MsCell
       >
     </div>
