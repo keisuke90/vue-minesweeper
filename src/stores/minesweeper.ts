@@ -53,13 +53,17 @@ export const useMinesweeperStore = defineStore({
     atPoint(x: number, y: number) {
       return this.field[y][x];
     },
-    setMine(): void {
+    setMine(x: number, y: number): void {
       for (let i = 0; i < this.mines; i++) {
         while (true) {
-          let x = Math.floor(Math.random() * 9);
-          let y = Math.floor(Math.random() * 9);
-          if (this.atPoint(x, y).isMine === false) {
-            this.atPoint(x, y).isMine = true;
+          let pointX = Math.floor(Math.random() * 9);
+          let pointY = Math.floor(Math.random() * 9);
+          if (
+            x != pointX &&
+            y != pointY &&
+            this.atPoint(pointX, pointY).isMine === false
+          ) {
+            this.atPoint(pointX, pointY).isMine = true;
             break;
           }
         }
@@ -94,15 +98,15 @@ export const useMinesweeperStore = defineStore({
         });
       });
     },
-    startGame(): void {
+    startGame(x: number, y: number): void {
       if (this.game === 0) {
         this.game = 1;
-        this.setMine();
+        this.setMine(x, y);
         this.countMine();
       }
     },
     openCell(x: number, y: number): void {
-      this.startGame();
+      this.startGame(x, y);
       if (!this.atPoint(x, y).isFlag) {
         this.atPoint(x, y).isOpen = true;
       }
