@@ -63,9 +63,39 @@ export const useMinesweeperStore = defineStore({
         }
       }
     },
+    isInField(x: number, y: number): boolean {
+      return x < this.width && y < this.height && x >= 0 && y >= 0;
+    },
+    countMine(): void {
+      let count: number = 0;
+      const arround = [
+        [-1, -1],
+        [0, -1],
+        [1, -1],
+        [-1, 0],
+        [1, 0],
+        [-1, 1],
+        [0, 1],
+        [1, 1],
+      ];
+      this.field.forEach((rows, y) => {
+        rows.forEach((cell, x) => {
+          for (let i = 0; i < arround.length; i++) {
+            if (this.isInField(x + arround[i][0], y + arround[i][1])) {
+              if (this.field[y + arround[i][1]][x + arround[i][0]].isMine) {
+                count++;
+              }
+            }
+          }
+          cell.count = count;
+          count = 0;
+        });
+      });
+    },
     startGame(): void {
       this.game = 1;
       this.setMine();
+      this.countMine();
     },
     openCell(x: number, y: number): void {
       if (this.game === 0) {
