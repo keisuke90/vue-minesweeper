@@ -6,6 +6,8 @@ interface Emits {
 interface Props {
   open: boolean;
   flag: boolean;
+  mine: boolean;
+  count: number;
 }
 defineProps<Props>();
 const emit = defineEmits<Emits>();
@@ -20,17 +22,18 @@ const rightClick = (): void => {
 <template>
   <div
     class="cell"
-    :class="{ open: open, flag: flag }"
+    :class="{ open: open }"
     @click="leftClick"
     @click.right.prevent="rightClick"
   >
-    <slot />
+    <span v-if="flag">🚩</span>
+    <span v-if="mine && open">💣</span>
+    <span v-if="open && !mine">{{ count }}</span>
   </div>
 </template>
 
 <style scoped>
 .cell {
-  display: inline-block;
   height: 30px;
   width: 30px;
   border: 1px solid white;
@@ -39,8 +42,5 @@ const rightClick = (): void => {
 
 .cell.open {
   background-color: gray;
-}
-.cell.flag {
-  background-color: green;
 }
 </style>
