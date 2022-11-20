@@ -9,7 +9,7 @@ interface State {
 }
 
 export class Mine {
-  public count: null | number;
+  public count: number;
   public isOpen: boolean;
   public isMine: boolean;
   public isFlag: boolean;
@@ -20,7 +20,7 @@ export class Mine {
     isMine: boolean,
     isFlag: boolean
   ) {
-    this.count = null;
+    this.count = 0;
     this.isOpen = false;
     this.isMine = false;
     this.isFlag = false;

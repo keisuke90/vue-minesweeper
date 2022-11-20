@@ -27,7 +27,9 @@ const flag = (x: number, y: number): void => {
         :flag="cell.isFlag"
         @leftClick="open(x, y)"
         @rightClick="flag(x, y)"
-        ><span v-if="cell.isOpen">{{ cell.count }}</span></MsCell
+        ><span v-if="cell.isOpen && cell.count > 0">{{
+          cell.count
+        }}</span></MsCell
       >
     </div>
   </div>
