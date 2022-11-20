@@ -19,18 +19,18 @@ const flag = (x: number, y: number): void => {
 
 <template>
   <div class="field">
-    <div v-for="(rows, y) in field" :key="y">
+    <div class="row" v-for="(rows, y) in field" :key="y">
       <MsCell
         v-for="(cell, x) in rows"
         :key="x"
         :open="cell.isOpen"
         :flag="cell.isFlag"
+        :mine="cell.isMine"
+        :count="cell.count"
         @leftClick="open(x, y)"
         @rightClick="flag(x, y)"
-        ><span v-if="cell.isOpen && cell.count > 0">{{
-          cell.count
-        }}</span></MsCell
       >
+      </MsCell>
     </div>
   </div>
 </template>
@@ -39,5 +39,10 @@ const flag = (x: number, y: number): void => {
 .field {
   height: 100%;
   width: 100%;
+}
+.row {
+  display: flex;
+  justify-content: center;
+  height: 30px;
 }
 </style>
