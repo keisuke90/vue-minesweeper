@@ -93,14 +93,14 @@ export const useMinesweeperStore = defineStore({
       });
     },
     startGame(): void {
-      this.game = 1;
-      this.setMine();
-      this.countMine();
+      if (this.game === 0) {
+        this.game = 1;
+        this.setMine();
+        this.countMine();
+      }
     },
     openCell(x: number, y: number): void {
-      if (this.game === 0) {
-        this.startGame();
-      }
+      this.startGame();
       if (!this.atPoint(x, y).isFlag) {
         this.atPoint(x, y).isOpen = true;
       }
