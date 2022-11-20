@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 interface State {
   height: number;
   width: number;
-  field: [Mine[]];
+  field: any[];
   game: 0 | 1 | 2 | 3; //0:初期状態,1:Play,2:ゲームオーバー,3:クリア
   mines: number;
 }
@@ -40,6 +40,8 @@ export const useMinesweeperStore = defineStore({
   },
   actions: {
     initFeild(): void {
+      this.game = 0;
+      this.field = [];
       for (let y = 0; y < this.height; y++) {
         let row = [];
         for (let x = 0; x < this.width; x++) {
@@ -79,7 +81,7 @@ export const useMinesweeperStore = defineStore({
         [1, 1],
       ];
       this.field.forEach((rows, y) => {
-        rows.forEach((cell, x) => {
+        rows.forEach((cell: Mine, x: number) => {
           for (let i = 0; i < arround.length; i++) {
             if (this.isInField(x + arround[i][0], y + arround[i][1])) {
               if (this.field[y + arround[i][1]][x + arround[i][0]].isMine) {

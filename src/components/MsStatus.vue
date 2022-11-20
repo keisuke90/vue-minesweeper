@@ -1,7 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useMinesweeperStore } from "@/stores/minesweeper";
+
+const miensweeperStore = useMinesweeperStore();
+const reset = (): void => {
+  miensweeperStore.initFeild();
+};
+</script>
 
 <template>
-  <h1 class="title">this is status</h1>
+  <button @click="reset">reset</button>
 </template>
 
 <style scoped>

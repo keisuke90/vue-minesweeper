@@ -6,7 +6,7 @@ import type { Mine } from "@/stores/minesweeper";
 
 const miensweeperStore = useMinesweeperStore();
 miensweeperStore.initFeild();
-const field = computed((): [Mine[]] => {
+const field = computed((): any[] => {
   return miensweeperStore.field;
 });
 const open = (x: number, y: number): void => {
