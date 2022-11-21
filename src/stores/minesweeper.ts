@@ -6,6 +6,7 @@ interface State {
   field: any[];
   game: 0 | 1 | 2 | 3; //0:初期状態,1:Play,2:ゲームオーバー,3:クリア
   mines: number;
+  time: number;
 }
 
 export class Mine {
@@ -36,6 +37,7 @@ export const useMinesweeperStore = defineStore({
       field: [] as any,
       game: 0,
       mines: 10,
+      time: 0,
     };
   },
   actions: {
