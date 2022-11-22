@@ -10,7 +10,7 @@ const mines = computed((): number => {
   return miensweeperStore.remaining;
 });
 const time = computed((): number => {
-  return miensweeperStore.time;
+  return miensweeperStore.playTime;
 });
 </script>
 

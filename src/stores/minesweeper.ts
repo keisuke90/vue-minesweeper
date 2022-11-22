@@ -7,7 +7,9 @@ interface State {
   game: 0 | 1 | 2 | 3; //0:初期状態,1:Play,2:ゲームオーバー,3:クリア
   mines: number;
   flags: number;
-  time: number;
+  playTime: number;
+  startTime: number;
+  timer: any;
 }
 
 export class Mine {
@@ -39,7 +41,9 @@ export const useMinesweeperStore = defineStore({
       game: 0,
       mines: 10,
       flags: 0,
-      time: 0,
+      playTime: 0,
+      startTime: 0,
+      timer: null,
     };
   },
   getters: {
@@ -58,7 +62,7 @@ export const useMinesweeperStore = defineStore({
       }
     },
     initGame(): void {
-      this.time = 0;
+      this.resetTimer();
       this.game = 0;
       this.flags = 0;
       this.field = [];
@@ -112,9 +116,24 @@ export const useMinesweeperStore = defineStore({
         });
       });
     },
+    startTimer(): void {
+      this.startTime = Date.now();
+      this.timer = setInterval(() => {
+        this.playTime = Math.floor((Date.now() - this.startTime) / 1000);
+      }, 1000);
+    },
+    stopTimer(): void {
+      clearInterval(this.timer);
+    },
+    resetTimer() {
+      this.stopTimer();
+      this.playTime = 0;
+      this.startTime = 0;
+    },
     startGame(x: number, y: number): void {
       if (this.game === 0) {
         this.game = 1;
+        this.startTimer();
         this.setMine(x, y);
         this.countMine();
       }
