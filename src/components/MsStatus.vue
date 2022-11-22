@@ -7,7 +7,7 @@ const reset = (): void => {
   miensweeperStore.initFeild();
 };
 const mines = computed((): number => {
-  return miensweeperStore.mines;
+  return miensweeperStore.remaining;
 });
 const time = computed((): number => {
   return miensweeperStore.time;

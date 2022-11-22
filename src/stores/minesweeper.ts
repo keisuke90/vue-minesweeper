@@ -6,6 +6,7 @@ interface State {
   field: any[];
   game: 0 | 1 | 2 | 3; //0:初期状態,1:Play,2:ゲームオーバー,3:クリア
   mines: number;
+  flags: number;
   time: number;
 }
 
@@ -37,12 +38,19 @@ export const useMinesweeperStore = defineStore({
       field: [] as any,
       game: 0,
       mines: 10,
+      flags: 0,
       time: 0,
     };
+  },
+  getters: {
+    remaining(): number {
+      return this.mines - this.flags >= 0 ? this.mines - this.flags : 0;
+    },
   },
   actions: {
     initFeild(): void {
       this.game = 0;
+      this.flags = 0;
       this.field = [];
       for (let y = 0; y < this.height; y++) {
         let row = [];
@@ -116,6 +124,11 @@ export const useMinesweeperStore = defineStore({
     flagCell(x: number, y: number): void {
       if (!this.atPoint(x, y).isOpen) {
         this.atPoint(x, y).isFlag = !this.atPoint(x, y).isFlag;
+        if (this.atPoint(x, y).isFlag) {
+          this.flags++;
+        } else {
+          this.flags--;
+        }
       }
     },
   },
