@@ -5,7 +5,7 @@ import { useMinesweeperStore } from "@/stores/minesweeper";
 import type { Mine } from "@/stores/minesweeper";
 
 const miensweeperStore = useMinesweeperStore();
-miensweeperStore.initFeild();
+miensweeperStore.initGame();
 const field = computed((): any[] => {
   return miensweeperStore.field;
 });

@@ -28,7 +28,7 @@ const rightClick = (): void => {
   >
     <span v-if="flag">🚩</span>
     <span v-if="mine && open">💣</span>
-    <span v-if="open && !mine">{{ count }}</span>
+    <span v-if="open && !mine && count != 0">{{ count }}</span>
   </div>
 </template>
 

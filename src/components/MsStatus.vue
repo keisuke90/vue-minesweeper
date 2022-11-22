@@ -4,13 +4,13 @@ import { useMinesweeperStore } from "@/stores/minesweeper";
 
 const miensweeperStore = useMinesweeperStore();
 const reset = (): void => {
-  miensweeperStore.initFeild();
+  miensweeperStore.initGame();
 };
 const mines = computed((): number => {
   return miensweeperStore.remaining;
 });
 const time = computed((): number => {
-  return miensweeperStore.time;
+  return miensweeperStore.playTime;
 });
 </script>
 
