@@ -9,7 +9,7 @@ interface State {
   flags: number;
   playTime: number;
   startTime: number;
-  timer: any;
+  timer: number;
 }
 
 export class Mine {
@@ -43,7 +43,7 @@ export const useMinesweeperStore = defineStore({
       flags: 0,
       playTime: 0,
       startTime: 0,
-      timer: null,
+      timer: 0,
     };
   },
   getters: {
