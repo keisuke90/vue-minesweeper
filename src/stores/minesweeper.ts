@@ -48,10 +48,7 @@ export const useMinesweeperStore = defineStore({
     },
   },
   actions: {
-    initFeild(): void {
-      this.game = 0;
-      this.flags = 0;
-      this.field = [];
+    setField(): void {
       for (let y = 0; y < this.height; y++) {
         let row = [];
         for (let x = 0; x < this.width; x++) {
@@ -59,6 +56,13 @@ export const useMinesweeperStore = defineStore({
         }
         this.field.push(row);
       }
+    },
+    initGame(): void {
+      this.time = 0;
+      this.game = 0;
+      this.flags = 0;
+      this.field = [];
+      this.setField();
     },
     atPoint(x: number, y: number) {
       return this.field[y][x];
