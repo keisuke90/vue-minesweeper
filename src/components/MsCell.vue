@@ -8,6 +8,7 @@ interface Props {
   flag: boolean;
   mine: boolean;
   count: number;
+  game: number;
 }
 defineProps<Props>();
 const emit = defineEmits<Emits>();
@@ -26,8 +27,11 @@ const rightClick = (): void => {
     @click="leftClick"
     @click.right.prevent="rightClick"
   >
+    <span v-if="game === 3 && mine">
+      <img src="../assets/logo.svg" alt="" />
+    </span>
     <span v-if="flag">🚩</span>
-    <span v-if="mine && open">💣</span>
+    <span v-if="mine && open && game != 3">💣</span>
     <span v-if="open && !mine && count != 0">{{ count }}</span>
   </div>
 </template>
@@ -42,5 +46,10 @@ const rightClick = (): void => {
 
 .cell.open {
   background-color: gray;
+}
+
+img {
+  height: 20px;
+  vertical-align: middle;
 }
 </style>

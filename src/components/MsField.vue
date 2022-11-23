@@ -15,6 +15,9 @@ const open = (x: number, y: number): void => {
 const flag = (x: number, y: number): void => {
   miensweeperStore.flagCell(x, y);
 };
+const game = computed((): number => {
+  return miensweeperStore.game;
+});
 </script>
 
 <template>
@@ -27,6 +30,7 @@ const flag = (x: number, y: number): void => {
         :flag="cell.isFlag"
         :mine="cell.isMine"
         :count="cell.count"
+        :game="game"
         @leftClick="open(x, y)"
         @rightClick="flag(x, y)"
       >
