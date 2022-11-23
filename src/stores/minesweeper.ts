@@ -10,7 +10,6 @@ interface State {
   playTime: number;
   startTime: number;
   timer: number;
-  openedCells: number;
 }
 
 export class Mine {
@@ -45,7 +44,6 @@ export const useMinesweeperStore = defineStore({
       playTime: 0,
       startTime: 0,
       timer: 0,
-      openedCells: 0,
     };
   },
   getters: {
@@ -148,6 +146,17 @@ export const useMinesweeperStore = defineStore({
         });
       });
     },
+    countOpenedCells(): number {
+      let opendCell = 0;
+      this.field.forEach((rows) => {
+        rows.forEach((cell: Mine) => {
+          if (cell.isOpen === true) {
+            opendCell++;
+          }
+        });
+      });
+      return opendCell;
+    },
     isLose(x: number, y: number): void {
       if (this.atPoint(x, y).isMine) {
         this.game = 2;
@@ -156,7 +165,8 @@ export const useMinesweeperStore = defineStore({
       }
     },
     isWin(): void {
-      if (this.openedCells + this.mines === this.height * this.width) {
+      const openedCells = this.countOpenedCells();
+      if (openedCells + this.mines === this.height * this.width) {
         this.game = 3;
         this.stopTimer();
         this.openField;
@@ -166,7 +176,6 @@ export const useMinesweeperStore = defineStore({
       this.startGame(x, y);
       if (!this.atPoint(x, y).isFlag) {
         this.atPoint(x, y).isOpen = true;
-        this.openedCells++;
         this.isLose(x, y);
         this.isWin();
       }
