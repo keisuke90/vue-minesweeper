@@ -12,11 +12,20 @@ const mines = computed((): number => {
 const time = computed((): number => {
   return miensweeperStore.playTime;
 });
+const game = computed((): number => {
+  return miensweeperStore.game;
+});
 </script>
 
 <template>
   <div class="status">
-    <div class="box">{{ mines }}</div>
+    <div class="box">
+      <p v-if="game === 0 || game === 1">
+        {{ mines }}
+      </p>
+      <p v-if="game === 2">LOSE</p>
+      <p v-if="game === 3">WIN</p>
+    </div>
     <button @click="reset">reset</button>
     <div class="box">{{ time }}</div>
   </div>
