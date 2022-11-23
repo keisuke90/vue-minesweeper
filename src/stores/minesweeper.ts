@@ -10,6 +10,7 @@ interface State {
   playTime: number;
   startTime: number;
   timer: number;
+  openedCells: number;
 }
 
 export class Mine {
@@ -44,6 +45,7 @@ export const useMinesweeperStore = defineStore({
       playTime: 0,
       startTime: 0,
       timer: 0,
+      openedCells: 0,
     };
   },
   getters: {
@@ -153,11 +155,20 @@ export const useMinesweeperStore = defineStore({
         this.openField();
       }
     },
+    isWin(): void {
+      if (this.openedCells + this.mines === this.height * this.width) {
+        this.game = 3;
+        this.stopTimer();
+        this.openField;
+      }
+    },
     openCell(x: number, y: number): void {
       this.startGame(x, y);
       if (!this.atPoint(x, y).isFlag) {
         this.atPoint(x, y).isOpen = true;
+        this.openedCells++;
         this.isLose(x, y);
+        this.isWin();
       }
     },
     flagCell(x: number, y: number): void {

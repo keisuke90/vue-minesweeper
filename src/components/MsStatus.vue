@@ -24,6 +24,7 @@ const game = computed((): number => {
         {{ mines }}
       </p>
       <p v-if="game === 2">LOSE</p>
+      <p v-if="game === 3">WIN</p>
     </div>
     <button @click="reset">reset</button>
     <div class="box">{{ time }}</div>
