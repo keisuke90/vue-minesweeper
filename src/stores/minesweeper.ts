@@ -157,37 +157,79 @@ export const useMinesweeperStore = defineStore({
       });
       return opendCell;
     },
-    isLose(x: number, y: number): boolean {
-      return this.atPoint(x, y).isMine;
+    isLose(): boolean {
+      let isLose = false;
+      this.field.forEach((rows) => {
+        rows.forEach((cell: Mine) => {
+          if (cell.isOpen && cell.isMine) {
+            isLose = true;
+          }
+        });
+      });
+      return isLose;
     },
     isWin(): boolean {
       const openedCells = this.countOpenedCells();
       return openedCells + this.mines === this.height * this.width;
     },
-    checkGame(x: number, y: number): void {
-      const isLose: boolean = this.isLose(x, y);
-      const isWin: boolean = this.isWin();
-
-      if (isLose) {
+    checkGame(): void {
+      if (this.isLose()) {
         this.game = 2;
         this.stopTimer();
         this.openField();
       }
-      if (isWin) {
+      if (this.isWin()) {
         this.game = 3;
         this.stopTimer();
         this.openField();
+      }
+    },
+    getArroundCell(x: number, y: number): [] {
+      const arroundCells: any = [];
+      const arround = [
+        [-1, -1],
+        [0, -1],
+        [1, -1],
+        [-1, 0],
+        [1, 0],
+        [-1, 1],
+        [0, 1],
+        [1, 1],
+      ];
+      arround.forEach((point) => {
+        if (this.isInField(x - point[1], y - point[0])) {
+          arroundCells.push(this.field[y - point[0]][x - point[1]]);
+        }
+      });
+      return arroundCells;
+    },
+    openArroundCells(x: number, y: number): void {
+      const arroundCells = this.getArroundCell(x, y);
+      let flags = 0;
+      arroundCells.forEach((cell: Mine) => {
+        if (cell.isFlag) {
+          flags++;
+        }
+      });
+
+      if (this.atPoint(x, y).isOpen && this.atPoint(x, y).count == flags) {
+        arroundCells.forEach((cell: Mine) => {
+          if (!cell.isFlag) {
+            cell.isOpen = true;
+            this.checkGame();
+          }
+        });
       }
     },
     openCell(x: number, y: number): void {
       this.startGame(x, y);
       if (!this.atPoint(x, y).isFlag) {
         this.atPoint(x, y).isOpen = true;
-        this.checkGame(x, y);
+        this.checkGame();
       }
     },
     flagCell(x: number, y: number): void {
-      if (!this.atPoint(x, y).isOpen) {
+      if (this.game != 0 && !this.atPoint(x, y).isOpen) {
         this.atPoint(x, y).isFlag = !this.atPoint(x, y).isFlag;
         if (this.atPoint(x, y).isFlag) {
           this.flags++;
