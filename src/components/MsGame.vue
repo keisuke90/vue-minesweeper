@@ -4,8 +4,14 @@ import MsStatus from "./MsStatus.vue";
 </script>
 
 <template>
-  <MsStatus />
-  <MsField />
+  <div class="game">
+    <MsStatus />
+    <MsField />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.game {
+  user-select: none;
+}
+</style>
