@@ -138,10 +138,26 @@ export const useMinesweeperStore = defineStore({
         this.countMine();
       }
     },
+    openField(): void {
+      this.field.forEach((rows) => {
+        rows.forEach((cell: Mine) => {
+          cell.isFlag = false;
+          cell.isOpen = true;
+        });
+      });
+    },
+    isLose(x: number, y: number): void {
+      if (this.atPoint(x, y).isMine) {
+        this.game = 2;
+        this.stopTimer();
+        this.openField();
+      }
+    },
     openCell(x: number, y: number): void {
       this.startGame(x, y);
       if (!this.atPoint(x, y).isFlag) {
         this.atPoint(x, y).isOpen = true;
+        this.isLose(x, y);
       }
     },
     flagCell(x: number, y: number): void {
