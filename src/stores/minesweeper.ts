@@ -157,27 +157,33 @@ export const useMinesweeperStore = defineStore({
       });
       return opendCell;
     },
-    isLose(x: number, y: number): void {
-      if (this.atPoint(x, y).isMine) {
+    isLose(x: number, y: number): boolean {
+      return this.atPoint(x, y).isMine;
+    },
+    isWin(): boolean {
+      const openedCells = this.countOpenedCells();
+      return openedCells + this.mines === this.height * this.width;
+    },
+    checkGame(x: number, y: number): void {
+      const isLose: boolean = this.isLose(x, y);
+      const isWin: boolean = this.isWin();
+
+      if (isLose) {
         this.game = 2;
         this.stopTimer();
         this.openField();
       }
-    },
-    isWin(): void {
-      const openedCells = this.countOpenedCells();
-      if (openedCells + this.mines === this.height * this.width) {
+      if (isWin) {
         this.game = 3;
         this.stopTimer();
-        this.openField;
+        this.openField();
       }
     },
     openCell(x: number, y: number): void {
       this.startGame(x, y);
       if (!this.atPoint(x, y).isFlag) {
         this.atPoint(x, y).isOpen = true;
-        this.isLose(x, y);
-        this.isWin();
+        this.checkGame(x, y);
       }
     },
     flagCell(x: number, y: number): void {
