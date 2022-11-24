@@ -203,6 +203,29 @@ export const useMinesweeperStore = defineStore({
       });
       return arroundCells;
     },
+    getArroundPoints(x: number, y: number): [] {
+      const arroundPoints: any = [];
+      const arround = [
+        [-1, -1],
+        [0, -1],
+        [1, -1],
+        [-1, 0],
+        [1, 0],
+        [-1, 1],
+        [0, 1],
+        [1, 1],
+      ];
+      arround.forEach((point) => {
+        if (
+          this.isInField(x + point[0], y + point[1]) &&
+          !this.field[y + point[1]][x + point[0]].isOpen &&
+          !this.field[y + point[1]][x + point[0]].isFlag
+        ) {
+          arroundPoints.push([x + point[0], y + point[1]]);
+        }
+      });
+      return arroundPoints;
+    },
     openArroundCells(x: number, y: number): void {
       const arroundCells = this.getArroundCell(x, y);
       let flags = 0;
@@ -221,10 +244,30 @@ export const useMinesweeperStore = defineStore({
         });
       }
     },
+    openEmptyCell(x: number, y: number): void {
+      let targetPoint: any = this.getArroundPoints(x, y);
+
+      while (targetPoint.length > 0) {
+        targetPoint.forEach((point: [number, number]) => {
+          if (this.field[point[1]][point[0]].count === 0) {
+            this.getArroundPoints(point[0], point[1]).forEach((p) =>
+              targetPoint.push(p)
+            );
+          }
+          this.field[point[1]][point[0]].isOpen = true;
+          targetPoint = targetPoint.filter((v: [number, number]) => {
+            return v != point;
+          });
+        });
+      }
+    },
     openCell(x: number, y: number): void {
       this.startGame(x, y);
       if (!this.atPoint(x, y).isFlag && !this.atPoint(x, y).isOpen) {
         this.atPoint(x, y).isOpen = true;
+        if (this.atPoint(x, y).count === 0) {
+          this.openEmptyCell(x, y);
+        }
         this.checkGame();
       }
     },
