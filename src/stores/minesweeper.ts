@@ -214,7 +214,7 @@ export const useMinesweeperStore = defineStore({
 
       if (this.atPoint(x, y).isOpen && this.atPoint(x, y).count == flags) {
         arroundCells.forEach((cell: Mine) => {
-          if (!cell.isFlag) {
+          if (!cell.isFlag && !cell.isOpen) {
             cell.isOpen = true;
             this.checkGame();
           }
@@ -223,7 +223,7 @@ export const useMinesweeperStore = defineStore({
     },
     openCell(x: number, y: number): void {
       this.startGame(x, y);
-      if (!this.atPoint(x, y).isFlag) {
+      if (!this.atPoint(x, y).isFlag && !this.atPoint(x, y).isOpen) {
         this.atPoint(x, y).isOpen = true;
         this.checkGame();
       }
