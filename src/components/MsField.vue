@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import MsCell from "./MsCell.vue";
 import { useMinesweeperStore } from "@/stores/minesweeper";
-import type { Mine } from "@/stores/minesweeper";
 
 const miensweeperStore = useMinesweeperStore();
 miensweeperStore.initGame();
