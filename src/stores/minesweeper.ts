@@ -12,7 +12,7 @@ interface State {
   timer: number;
 }
 
-export class Mine {
+export class Cell {
   public count: number;
   public isOpen: boolean;
   public isMine: boolean;
@@ -56,7 +56,7 @@ export const useMinesweeperStore = defineStore({
       for (let y = 0; y < this.height; y++) {
         let row = [];
         for (let x = 0; x < this.width; x++) {
-          row.push(new Mine(null, false, false, false));
+          row.push(new Cell(null, false, false, false));
         }
         this.field.push(row);
       }
@@ -103,7 +103,7 @@ export const useMinesweeperStore = defineStore({
         [1, 1],
       ];
       this.field.forEach((rows, y) => {
-        rows.forEach((cell: Mine, x: number) => {
+        rows.forEach((cell: Cell, x: number) => {
           for (let i = 0; i < arround.length; i++) {
             if (this.isInField(x + arround[i][0], y + arround[i][1])) {
               if (this.field[y + arround[i][1]][x + arround[i][0]].isMine) {
@@ -140,7 +140,7 @@ export const useMinesweeperStore = defineStore({
     },
     openField(): void {
       this.field.forEach((rows) => {
-        rows.forEach((cell: Mine) => {
+        rows.forEach((cell: Cell) => {
           cell.isFlag = false;
           cell.isOpen = true;
         });
@@ -149,7 +149,7 @@ export const useMinesweeperStore = defineStore({
     countOpenedCells(): number {
       let opendCell = 0;
       this.field.forEach((rows) => {
-        rows.forEach((cell: Mine) => {
+        rows.forEach((cell: Cell) => {
           if (cell.isOpen === true) {
             opendCell++;
           }
@@ -160,7 +160,7 @@ export const useMinesweeperStore = defineStore({
     isLose(): boolean {
       let isLose = false;
       this.field.forEach((rows) => {
-        rows.forEach((cell: Mine) => {
+        rows.forEach((cell: Cell) => {
           if (cell.isOpen && cell.isMine) {
             isLose = true;
           }
