@@ -218,8 +218,7 @@ export const useMinesweeperStore = defineStore({
       arround.forEach((point) => {
         if (
           this.isInField(x + point[0], y + point[1]) &&
-          !this.field[y + point[1]][x + point[0]].isOpen &&
-          !this.field[y + point[1]][x + point[0]].isFlag
+          !this.field[y + point[1]][x + point[0]].isOpen
         ) {
           arroundPoints.push([x + point[0], y + point[1]]);
         }
@@ -227,21 +226,28 @@ export const useMinesweeperStore = defineStore({
       return arroundPoints;
     },
     openArroundCells(x: number, y: number): void {
-      const arroundCells = this.getArroundCell(x, y);
+      const arroundPoints = this.getArroundPoints(x, y);
       let flags = 0;
-      arroundCells.forEach((cell: Mine) => {
-        if (cell.isFlag) {
+      arroundPoints.forEach((point: [number, number]) => {
+        if (this.atPoint(point[0], point[1]).isFlag) {
           flags++;
         }
       });
 
+      let targetPoint: any = [];
       if (this.atPoint(x, y).isOpen && this.atPoint(x, y).count == flags) {
-        arroundCells.forEach((cell: Mine) => {
-          if (!cell.isFlag && !cell.isOpen) {
-            cell.isOpen = true;
-            this.checkGame();
+        arroundPoints.forEach((point: [number, number]) => {
+          if (!this.field[point[1]][point[0]].isFlag) {
+            this.field[point[1]][point[0]].isOpen = true;
+            if (this.field[point[1]][point[0]].count === 0) {
+              targetPoint.push([point[0], point[1]]);
+            }
           }
         });
+        targetPoint.forEach((point2: [number, number]) => {
+          this.openEmptyCell(point2[0], point2[1]);
+        });
+        this.checkGame();
       }
     },
     openEmptyCell(x: number, y: number): void {
@@ -250,9 +256,11 @@ export const useMinesweeperStore = defineStore({
       while (targetPoint.length > 0) {
         targetPoint.forEach((point: [number, number]) => {
           if (this.field[point[1]][point[0]].count === 0) {
-            this.getArroundPoints(point[0], point[1]).forEach((p) =>
-              targetPoint.push(p)
-            );
+            this.getArroundPoints(point[0], point[1]).forEach((p) => {
+              if (!this.atPoint(p[0], p[1]).isFlag) {
+                targetPoint.push(p);
+              }
+            });
           }
           this.field[point[1]][point[0]].isOpen = true;
           targetPoint = targetPoint.filter((v: [number, number]) => {
