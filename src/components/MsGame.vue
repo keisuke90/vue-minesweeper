@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import MsField from "./MsField.vue";
-import MsStatus from "./MsStatus.vue";
+import MsStatusBar from "./MsStatusBar.vue";
 </script>
 
 <template>
   <div class="game">
-    <MsStatus />
+    <MsStatusBar />
     <MsField />
   </div>
 </template>
