@@ -19,7 +19,7 @@ export class Cell {
   public isFlag: boolean;
 
   constructor(
-    count: null | number,
+    count: number,
     isOpen: boolean,
     isMine: boolean,
     isFlag: boolean
@@ -56,7 +56,7 @@ export const useMinesweeperStore = defineStore({
       for (let y = 0; y < this.height; y++) {
         let row = [];
         for (let x = 0; x < this.width; x++) {
-          row.push(new Cell(null, false, false, false));
+          row.push(new Cell(0, false, false, false));
         }
         this.field.push(row);
       }
@@ -74,8 +74,8 @@ export const useMinesweeperStore = defineStore({
     setMine(x: number, y: number): void {
       for (let i = 0; i < this.mines; i++) {
         while (true) {
-          let pointX = Math.floor(Math.random() * 9);
-          let pointY = Math.floor(Math.random() * 9);
+          let pointX = Math.floor(Math.random() * this.width);
+          let pointY = Math.floor(Math.random() * this.height);
           if (
             x != pointX &&
             y != pointY &&
@@ -147,15 +147,15 @@ export const useMinesweeperStore = defineStore({
       });
     },
     countOpenedCells(): number {
-      let opendCell = 0;
+      let opendCells = 0;
       this.field.forEach((rows) => {
         rows.forEach((cell: Cell) => {
           if (cell.isOpen === true) {
-            opendCell++;
+            opendCells++;
           }
         });
       });
-      return opendCell;
+      return opendCells;
     },
     isLose(): boolean {
       let isLose = false;
