@@ -13,5 +13,6 @@ import MsStatusBar from "./MsStatusBar.vue";
 <style scoped>
 .game {
   user-select: none;
+  width: fit-content;
 }
 </style>

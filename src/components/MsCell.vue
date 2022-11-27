@@ -38,6 +38,7 @@ const rightClick = (): void => {
 
 <style scoped>
 .cell {
+  text-align: center;
   height: 30px;
   width: 30px;
   border: 1px solid white;
