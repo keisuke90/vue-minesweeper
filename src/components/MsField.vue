@@ -20,9 +20,6 @@ const openArroundCell = (x: number, y: number): void => {
 const game = computed((): number => {
   return miensweeperStore.game;
 });
-const changeHard = (): void => {
-  miensweeperStore.changeHard();
-};
 </script>
 
 <template>
@@ -45,12 +42,11 @@ const changeHard = (): void => {
       </MsCell>
     </div>
   </div>
-  <button class="button" @click="changeHard()">hard</button>
 </template>
 
 <style scoped>
 .field {
-  height: 100%;
+  height: auto;
   width: 100%;
 }
 .row {
