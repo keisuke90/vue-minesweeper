@@ -284,5 +284,10 @@ export const useMinesweeperStore = defineStore({
         }
       }
     },
+    changeHard(): void {
+      this.field = [];
+      this.gameLevel = { mines: 99, height: 16, width: 30 };
+      this.setField();
+    },
   },
 });
