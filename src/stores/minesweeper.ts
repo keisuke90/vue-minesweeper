@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 
 interface State {
-  height: number;
-  width: number;
+  gameLevel: { mines: number; height: number; width: number };
   field: any[];
   game: 0 | 1 | 2 | 3; //0:初期状態,1:Play,2:ゲームオーバー,3:クリア
-  mines: number;
   flags: number;
+  openCells: number;
+  miss: boolean;
   playTime: number;
   startTime: number;
   timer: number;
@@ -35,12 +35,12 @@ export const useMinesweeperStore = defineStore({
   id: "game",
   state: (): State => {
     return {
-      height: 9,
-      width: 9,
+      gameLevel: { mines: 10, height: 9, width: 9 },
       field: [] as any,
       game: 0,
-      mines: 10,
       flags: 0,
+      openCells: 0,
+      miss: false,
       playTime: 0,
       startTime: 0,
       timer: 0,
@@ -48,14 +48,16 @@ export const useMinesweeperStore = defineStore({
   },
   getters: {
     remaining(): number {
-      return this.mines - this.flags >= 0 ? this.mines - this.flags : 0;
+      return this.gameLevel.mines - this.flags >= 0
+        ? this.gameLevel.mines - this.flags
+        : 0;
     },
   },
   actions: {
     setField(): void {
-      for (let y = 0; y < this.height; y++) {
+      for (let y = 0; y < this.gameLevel.height; y++) {
         let row = [];
-        for (let x = 0; x < this.width; x++) {
+        for (let x = 0; x < this.gameLevel.width; x++) {
           row.push(new Cell(0, false, false, false));
         }
         this.field.push(row);
@@ -65,6 +67,8 @@ export const useMinesweeperStore = defineStore({
       this.resetTimer();
       this.game = 0;
       this.flags = 0;
+      this.openCells = 0;
+      this.miss = false;
       this.field = [];
       this.setField();
     },
@@ -72,10 +76,10 @@ export const useMinesweeperStore = defineStore({
       return this.field[y][x];
     },
     setMine(x: number, y: number): void {
-      for (let i = 0; i < this.mines; i++) {
+      for (let i = 0; i < this.gameLevel.mines; i++) {
         while (true) {
-          let pointX = Math.floor(Math.random() * this.width);
-          let pointY = Math.floor(Math.random() * this.height);
+          let pointX = Math.floor(Math.random() * this.gameLevel.width);
+          let pointY = Math.floor(Math.random() * this.gameLevel.height);
           if (
             x != pointX &&
             y != pointY &&
@@ -88,7 +92,12 @@ export const useMinesweeperStore = defineStore({
       }
     },
     isInField(x: number, y: number): boolean {
-      return x < this.width && y < this.height && x >= 0 && y >= 0;
+      return (
+        x < this.gameLevel.width &&
+        y < this.gameLevel.height &&
+        x >= 0 &&
+        y >= 0
+      );
     },
     countMine(): void {
       let count: number = 0;
@@ -104,13 +113,13 @@ export const useMinesweeperStore = defineStore({
       ];
       this.field.forEach((rows, y) => {
         rows.forEach((cell: Cell, x: number) => {
-          for (let i = 0; i < arround.length; i++) {
-            if (this.isInField(x + arround[i][0], y + arround[i][1])) {
-              if (this.field[y + arround[i][1]][x + arround[i][0]].isMine) {
+          arround.forEach((point) => {
+            if (this.isInField(x + point[0], y + point[1])) {
+              if (this.field[y + point[1]][x + point[0]].isMine) {
                 count++;
               }
             }
-          }
+          });
           cell.count = count;
           count = 0;
         });
@@ -146,31 +155,23 @@ export const useMinesweeperStore = defineStore({
         });
       });
     },
-    countOpenedCells(): number {
-      let opendCells = 0;
-      this.field.forEach((rows) => {
-        rows.forEach((cell: Cell) => {
-          if (cell.isOpen === true) {
-            opendCells++;
-          }
-        });
-      });
-      return opendCells;
+    countOpenCells(): void {
+      this.openCells++;
     },
     isLose(): boolean {
-      let isLose = false;
-      this.field.forEach((rows) => {
-        rows.forEach((cell: Cell) => {
-          if (cell.isOpen && cell.isMine) {
-            isLose = true;
-          }
-        });
-      });
-      return isLose;
+      return this.miss;
     },
     isWin(): boolean {
-      const openedCells = this.countOpenedCells();
-      return openedCells + this.mines === this.height * this.width;
+      return (
+        this.openCells + this.gameLevel.mines ===
+        this.gameLevel.height * this.gameLevel.width
+      );
+    },
+    canOpen(x: number, y: number): boolean {
+      return !this.atPoint(x, y).isOpen && !this.atPoint(x, y).isFlag;
+    },
+    isMine(x: number, y: number): boolean {
+      return this.atPoint(x, y).isMine;
     },
     checkGame(): void {
       if (this.isLose()) {
@@ -184,8 +185,8 @@ export const useMinesweeperStore = defineStore({
         this.openField();
       }
     },
-    getArroundCell(x: number, y: number): [] {
-      const arroundCells: any = [];
+    getArroundPoints(x: number, y: number): any[] {
+      const arroundPoints: any[] = [];
       const arround = [
         [-1, -1],
         [0, -1],
@@ -197,29 +198,7 @@ export const useMinesweeperStore = defineStore({
         [1, 1],
       ];
       arround.forEach((point) => {
-        if (this.isInField(x - point[1], y - point[0])) {
-          arroundCells.push(this.field[y - point[0]][x - point[1]]);
-        }
-      });
-      return arroundCells;
-    },
-    getArroundPoints(x: number, y: number): [] {
-      const arroundPoints: any = [];
-      const arround = [
-        [-1, -1],
-        [0, -1],
-        [1, -1],
-        [-1, 0],
-        [1, 0],
-        [-1, 1],
-        [0, 1],
-        [1, 1],
-      ];
-      arround.forEach((point) => {
-        if (
-          this.isInField(x + point[0], y + point[1]) &&
-          !this.field[y + point[1]][x + point[0]].isOpen
-        ) {
+        if (this.isInField(x + point[0], y + point[1])) {
           arroundPoints.push([x + point[0], y + point[1]]);
         }
       });
@@ -234,45 +213,61 @@ export const useMinesweeperStore = defineStore({
         }
       });
 
-      let targetPoint: any = [];
-      if (this.atPoint(x, y).isOpen && this.atPoint(x, y).count == flags) {
+      let targetPoints: any[] = [];
+      if (this.atPoint(x, y).isOpen && this.atPoint(x, y).count === flags) {
         arroundPoints.forEach((point: [number, number]) => {
-          if (!this.field[point[1]][point[0]].isFlag) {
-            this.field[point[1]][point[0]].isOpen = true;
-            if (this.field[point[1]][point[0]].count === 0) {
-              targetPoint.push([point[0], point[1]]);
+          if (this.canOpen(point[0], point[1])) {
+            this.atPoint(point[0], point[1]).isOpen = true;
+            this.countOpenCells();
+            if (this.isMine(point[0], point[1])) {
+              this.miss = true;
+            }
+            if (this.atPoint(point[0], point[1]).count === 0) {
+              targetPoints.push([point[0], point[1]]);
             }
           }
         });
-        targetPoint.forEach((point2: [number, number]) => {
-          this.openEmptyCell(point2[0], point2[1]);
+        targetPoints.forEach((targetPoint: [number, number]) => {
+          this.openEmptyCell(targetPoint[0], targetPoint[1]);
         });
         this.checkGame();
       }
     },
     openEmptyCell(x: number, y: number): void {
-      let targetPoint: any = this.getArroundPoints(x, y);
+      let targetPoints: any[] = this.getArroundPoints(x, y);
 
-      while (targetPoint.length > 0) {
-        targetPoint.forEach((point: [number, number]) => {
-          if (this.field[point[1]][point[0]].count === 0) {
-            this.getArroundPoints(point[0], point[1]).forEach((p) => {
-              if (!this.atPoint(p[0], p[1]).isFlag) {
-                targetPoint.push(p);
+      while (targetPoints.length > 0) {
+        targetPoints.forEach((point: [number, number]) => {
+          if (this.atPoint(point[0], point[1]).count === 0) {
+            this.getArroundPoints(point[0], point[1]).forEach(
+              (arroundPoint) => {
+                if (this.canOpen(point[0], point[1])) {
+                  targetPoints.push(arroundPoint);
+                }
               }
-            });
+            );
           }
-          this.field[point[1]][point[0]].isOpen = true;
-          targetPoint = targetPoint.filter((v: [number, number]) => {
-            return v != point;
-          });
+          if (this.canOpen(point[0], point[1])) {
+            this.atPoint(point[0], point[1]).isOpen = true;
+            this.countOpenCells();
+          }
+          targetPoints = targetPoints.filter(
+            (targetPoint: [number, number]) => {
+              return targetPoint != point;
+            }
+          );
         });
       }
     },
     openCell(x: number, y: number): void {
       this.startGame(x, y);
-      if (!this.atPoint(x, y).isFlag && !this.atPoint(x, y).isOpen) {
+      if (this.canOpen(x, y)) {
         this.atPoint(x, y).isOpen = true;
+        this.countOpenCells();
+
+        if (this.isMine(x, y)) {
+          this.miss = true;
+        }
         if (this.atPoint(x, y).count === 0) {
           this.openEmptyCell(x, y);
         }
