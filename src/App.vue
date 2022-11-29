@@ -1,5 +1,15 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import MsGame from "./components/MsGame.vue";
+import ScoreModal from "./components/ScoreModal.vue";
+
+let modalVisible = ref(false);
+const showModal = (): void => {
+  modalVisible.value = true;
+};
+const closeModal = (): void => {
+  modalVisible.value = false;
+};
 </script>
 
 <template>
@@ -7,6 +17,8 @@ import MsGame from "./components/MsGame.vue";
   <div class="content">
     <MsGame />
   </div>
+  <button @click="showModal()">score</button>
+  <score-modal :isVisible="modalVisible" @close="closeModal"></score-modal>
 </template>
 
 <style scoped>
@@ -20,5 +32,9 @@ import MsGame from "./components/MsGame.vue";
   justify-content: center;
   max-width: 640px;
   margin: 0 auto;
+}
+button {
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>
