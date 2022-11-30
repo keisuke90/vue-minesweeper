@@ -46,5 +46,35 @@ export const useScoreStore = defineStore({
     };
   },
   getters: {},
-  actions: {},
+  actions: {
+    async prepareScoreList(): Promise<boolean> {
+      const database = await getDatabase();
+      const promise = new Promise<boolean>((resolve, reject) => {
+        const transaction = database.transaction("scores", "readonly");
+        const objectStore = transaction.objectStore("scores");
+        const scoreList = new Map<number, Score>();
+        const request = objectStore.openCursor();
+        request.onsuccess = (event) => {
+          const target = event.target as IDBRequest;
+          const cursor = target.result as IDBCursorWithValue;
+          if (cursor) {
+            const id = cursor.key as number;
+            const score = cursor.value as Score;
+            scoreList.set(id, score);
+            cursor.continue;
+          }
+        };
+        transaction.oncomplete = () => {
+          this.scoreList = scoreList;
+          this.isLoading = false;
+          resolve(true);
+        };
+        transaction.onerror = (event) => {
+          console.log("error: データの取得に失敗しました。", event);
+          reject(new Error("error: データ取得に失敗しました。"));
+        };
+      });
+      return promise;
+    },
+  },
 });
