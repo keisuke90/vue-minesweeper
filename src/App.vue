@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import MsGame from "./components/MsGame.vue";
 import ScoreModal from "./components/ScoreModal.vue";
+import { useScoreStore } from "@/stores/score";
+
+const scoreStore = useScoreStore();
 
 let modalVisible = ref(false);
 const showModal = (): void => {
@@ -10,6 +13,9 @@ const showModal = (): void => {
 const closeModal = (): void => {
   modalVisible.value = false;
 };
+const isLoading = computed((): boolean => {
+  return scoreStore.isLoading;
+});
 </script>
 
 <template>
@@ -18,7 +24,11 @@ const closeModal = (): void => {
     <MsGame />
   </div>
   <button @click="showModal()">score</button>
-  <score-modal :isVisible="modalVisible" @close="closeModal"></score-modal>
+  <score-modal
+    :isVisible="modalVisible"
+    :isLoading="isLoading"
+    @close="closeModal"
+  ></score-modal>
 </template>
 
 <style scoped>

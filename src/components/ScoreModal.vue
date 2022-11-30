@@ -1,6 +1,7 @@
 <script setup lang="ts">
 interface Props {
   isVisible: boolean;
+  isLoading: boolean;
 }
 interface Emits {
   (event: "close"): void;
@@ -21,14 +22,7 @@ const close = (): void => {
       @click="close"
     ></div>
     <div class="modal-content" v-show="isVisible">
-      <p>ここにSCOREを表示</p>
-      <p>ここにSCOREを表示</p>
-      <p>ここにSCOREを表示</p>
-      <p>ここにSCOREを表示</p>
-      <p>ここにSCOREを表示</p>
-      <p>ここにSCOREを表示</p>
-      <p>ここにSCOREを表示</p>
-      <p>ここにSCOREを表示</p>
+      <p v-if="isLoading">データ取得中...</p>
     </div>
   </teleport>
 </template>
