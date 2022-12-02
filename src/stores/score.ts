@@ -76,5 +76,24 @@ export const useScoreStore = defineStore({
       });
       return promise;
     },
+    async addScore(score: Score): Promise<boolean> {
+      const scoreAdd: Score = {
+        ...score,
+      };
+      const database = await getDatabase();
+      const promise = new Promise<boolean>((resolve, reject) => {
+        const transaction = database.transaction("scores", "readwrite");
+        const objectStore = transaction.objectStore("scores");
+        objectStore.put(scoreAdd);
+        transaction.oncomplete = () => {
+          resolve(true);
+        };
+        transaction.onerror = (event) => {
+          console.log("error: データ登録に失敗。", event);
+          reject(new Error("error: データ登録に失敗。"));
+        };
+      });
+      return promise;
+    },
   },
 });
