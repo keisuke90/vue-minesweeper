@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-interface Score {
+export interface Score {
   level: string;
   time: number;
   date: string;
@@ -21,7 +21,10 @@ async function getDatabase(): Promise<IDBDatabase> {
       request.onupgradeneeded = (event) => {
         const target = event.target as IDBRequest;
         const database = target.result as IDBDatabase;
-        database.createObjectStore("scores", { keyPath: "id" });
+        database.createObjectStore("scores", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
       };
       request.onsuccess = (event) => {
         const target = event.target as IDBRequest;

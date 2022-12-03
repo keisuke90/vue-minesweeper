@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import MsGame from "./components/MsGame.vue";
 import ScoreModal from "./components/ScoreModal.vue";
 import { useScoreStore } from "@/stores/score";
 import { useMinesweeperStore } from "@/stores/minesweeper";
+import type { Score } from "@/stores/score";
 
 const scoreStore = useScoreStore();
 const minesweeperStore = useMinesweeperStore();
@@ -20,10 +21,39 @@ const isLoading = computed((): boolean => {
 });
 
 const isWin = computed((): boolean => {
-  return minesweeperStore.game === 3;
+  return minesweeperStore.game == 3;
 });
-const time = computed((): number => {
+const gameTime = computed((): number => {
   return minesweeperStore.playTime;
+});
+const recordClearTime = (score: Score): void => {
+  const promise = scoreStore.addScore(score);
+  promise.then((result: boolean) => {
+    if (result) {
+      showModal();
+    }
+  });
+  promise.catch((error) => {
+    console.log("登録失敗しました。", error);
+  });
+};
+
+const recordScore = (): Score => {
+  const score: Score = { level: "", time: 0, date: "" };
+  score.level = minesweeperStore.gameLevel.level;
+  score.time = gameTime.value;
+  const year = new Date().getFullYear().toString();
+  const month = (new Date().getMonth() + 1).toString();
+  const day = new Date().getDate().toString();
+  score.date = year + "/" + month + "/" + day;
+  return score;
+};
+
+watch(isWin, (): void => {
+  if (isWin.value) {
+    recordScore();
+    recordClearTime(recordScore());
+  }
 });
 </script>
 
@@ -37,7 +67,7 @@ const time = computed((): number => {
     :isVisible="modalVisible"
     :isLoading="isLoading"
     @close="closeModal"
-    :time="time"
+    :time="gameTime"
     :isWin="isWin"
   ></score-modal>
 </template>

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 interface State {
-  gameLevel: { mines: number; height: number; width: number };
+  gameLevel: { level: string; mines: number; height: number; width: number };
   field: any[];
   game: 0 | 1 | 2 | 3; //0:初期状態,1:Play,2:ゲームオーバー,3:クリア
   flags: number;
@@ -35,7 +35,7 @@ export const useMinesweeperStore = defineStore({
   id: "game",
   state: (): State => {
     return {
-      gameLevel: { mines: 10, height: 9, width: 9 },
+      gameLevel: { level: "easy", mines: 10, height: 9, width: 9 },
       field: [] as any,
       game: 0,
       flags: 0,
@@ -286,9 +286,9 @@ export const useMinesweeperStore = defineStore({
     },
     changeGameLevel(level: string): void {
       const gameLevel: any = {
-        easy: { mines: 10, height: 9, width: 9 },
-        normal: { mines: 40, height: 16, width: 16 },
-        hard: { mines: 99, height: 16, width: 30 },
+        easy: { level: "easy", mines: 10, height: 9, width: 9 },
+        normal: { level: "normal", mines: 40, height: 16, width: 16 },
+        hard: { level: "hard", mines: 99, height: 16, width: 30 },
       };
       this.gameLevel = gameLevel[level];
       this.initGame();
