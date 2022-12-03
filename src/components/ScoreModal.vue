@@ -5,6 +5,8 @@ import { useScoreStore } from "@/stores/score";
 interface Props {
   isVisible: boolean;
   isLoading: boolean;
+  time: number;
+  isWin: boolean;
 }
 interface Emits {
   (event: "close"): void;
@@ -29,6 +31,7 @@ scoreStore.prepareScoreList();
     ></div>
     <div class="modal-content" v-show="isVisible">
       <p v-if="isLoading">データ取得中...</p>
+      <p v-if="isWin">クリアタイム：{{ time }}</p>
     </div>
   </teleport>
 </template>

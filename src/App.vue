@@ -3,8 +3,10 @@ import { ref, computed } from "vue";
 import MsGame from "./components/MsGame.vue";
 import ScoreModal from "./components/ScoreModal.vue";
 import { useScoreStore } from "@/stores/score";
+import { useMinesweeperStore } from "@/stores/minesweeper";
 
 const scoreStore = useScoreStore();
+const minesweeperStore = useMinesweeperStore();
 
 let modalVisible = ref(false);
 const showModal = (): void => {
@@ -15,6 +17,13 @@ const closeModal = (): void => {
 };
 const isLoading = computed((): boolean => {
   return scoreStore.isLoading;
+});
+
+const isWin = computed((): boolean => {
+  return minesweeperStore.game === 3;
+});
+const time = computed((): number => {
+  return minesweeperStore.playTime;
 });
 </script>
 
@@ -28,6 +37,8 @@ const isLoading = computed((): boolean => {
     :isVisible="modalVisible"
     :isLoading="isLoading"
     @close="closeModal"
+    :time="time"
+    :isWin="isWin"
   ></score-modal>
 </template>
 
