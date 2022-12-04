@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useScoreStore } from "@/stores/score";
+import type { Score } from "@/stores/score";
 
 interface Props {
   isVisible: boolean;
   isLoading: boolean;
   time: number;
   isWin: boolean;
+  scoreList: Map<number, Score>;
 }
 interface Emits {
   (event: "close"): void;
@@ -16,9 +16,6 @@ const emit = defineEmits<Emits>();
 const close = (): void => {
   emit("close");
 };
-
-const scoreStore = useScoreStore();
-scoreStore.prepareScoreList();
 </script>
 
 <template>
@@ -32,6 +29,22 @@ scoreStore.prepareScoreList();
     <div class="modal-content" v-show="isVisible">
       <p v-if="isLoading">データ取得中...</p>
       <p v-if="isWin">クリアタイム：{{ time }}</p>
+      <div class="score-table">
+        <tr class="score-header">
+          <th>No</th>
+          <th>レベル</th>
+          <th>タイム</th>
+          <th>日</th>
+        </tr>
+        <template v-for="(score, id) in scoreList" :key="id">
+          <tr class="score-data">
+            <td>{{ id + 1 }}</td>
+            <td>{{ score[1].level }}</td>
+            <td>{{ score[1].time }}</td>
+            <td>{{ score[1].date }}</td>
+          </tr>
+        </template>
+      </div>
     </div>
   </teleport>
 </template>
@@ -66,5 +79,17 @@ scoreStore.prepareScoreList();
   height: auto;
   border-radius: 20px;
   padding: 20px;
+}
+
+.score-table {
+  width: 70%;
+}
+.score-header {
+  display: flex;
+  justify-content: space-between;
+}
+.score-data {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

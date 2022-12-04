@@ -51,9 +51,15 @@ const recordScore = (): Score => {
 
 watch(isWin, (): void => {
   if (isWin.value) {
+    scoreStore.prepareScoreList();
     recordScore();
     recordClearTime(recordScore());
   }
+});
+
+scoreStore.prepareScoreList();
+const scoreList = computed((): Map<number, Score> => {
+  return scoreStore.scoreList;
 });
 </script>
 
@@ -69,6 +75,7 @@ watch(isWin, (): void => {
     @close="closeModal"
     :time="gameTime"
     :isWin="isWin"
+    :scoreList="scoreList"
   ></score-modal>
 </template>
 

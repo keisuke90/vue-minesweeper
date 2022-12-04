@@ -64,7 +64,7 @@ export const useScoreStore = defineStore({
             const id = cursor.key as number;
             const score = cursor.value as Score;
             scoreList.set(id, score);
-            cursor.continue;
+            cursor.continue();
           }
         };
         transaction.oncomplete = () => {
