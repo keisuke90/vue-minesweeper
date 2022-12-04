@@ -6,7 +6,6 @@ interface Props {
   isLoading: boolean;
   time: number;
   isWin: boolean;
-  scoreList: Map<number, Score>;
 }
 interface Emits {
   (event: "close"): void;
@@ -29,7 +28,7 @@ const close = (): void => {
     <div class="modal-content" v-show="isVisible">
       <p v-if="isLoading">データ取得中...</p>
       <p v-if="isWin">クリアタイム：{{ time }}</p>
-      <div class="score-table">
+      <!-- <div class="score-table">
         <tr class="score-header">
           <th>No</th>
           <th>レベル</th>
@@ -44,7 +43,7 @@ const close = (): void => {
             <td>{{ score[1].date }}</td>
           </tr>
         </template>
-      </div>
+      </div> -->
     </div>
   </teleport>
 </template>

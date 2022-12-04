@@ -7,7 +7,14 @@ export interface Score {
 }
 
 interface State {
-  scoreList: Map<number, Score>;
+  recordTime: Map<
+    number,
+    {
+      easy: { time: number; date: string };
+      normal: { time: number; date: string };
+      hard: { time: number; date: string };
+    }
+  >;
   isLoading: boolean;
 }
 
@@ -21,7 +28,7 @@ async function getDatabase(): Promise<IDBDatabase> {
       request.onupgradeneeded = (event) => {
         const target = event.target as IDBRequest;
         const database = target.result as IDBDatabase;
-        database.createObjectStore("scores", {
+        database.createObjectStore("record", {
           keyPath: "id",
           autoIncrement: true,
         });
@@ -44,7 +51,14 @@ export const useScoreStore = defineStore({
   id: "score",
   state: (): State => {
     return {
-      scoreList: new Map<number, Score>(),
+      recordTime: new Map<
+        number,
+        {
+          easy: { time: number; date: string };
+          normal: { time: number; date: string };
+          hard: { time: number; date: string };
+        }
+      >(),
       isLoading: true,
     };
   },
@@ -53,22 +67,29 @@ export const useScoreStore = defineStore({
     async prepareScoreList(): Promise<boolean> {
       const database = await getDatabase();
       const promise = new Promise<boolean>((resolve, reject) => {
-        const transaction = database.transaction("scores", "readonly");
-        const objectStore = transaction.objectStore("scores");
-        const scoreList = new Map<number, Score>();
+        const transaction = database.transaction("record", "readonly");
+        const objectStore = transaction.objectStore("record");
+        const recordTime = new Map<
+          number,
+          {
+            easy: { time: number; date: string };
+            normal: { time: number; date: string };
+            hard: { time: number; date: string };
+          }
+        >();
         const request = objectStore.openCursor();
         request.onsuccess = (event) => {
           const target = event.target as IDBRequest;
           const cursor = target.result as IDBCursorWithValue;
           if (cursor) {
             const id = cursor.key as number;
-            const score = cursor.value as Score;
-            scoreList.set(id, score);
+            const time = cursor.value;
+            recordTime.set(id, time);
             cursor.continue();
           }
         };
         transaction.oncomplete = () => {
-          this.scoreList = scoreList;
+          this.recordTime = recordTime;
           this.isLoading = false;
           resolve(true);
         };

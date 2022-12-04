@@ -58,9 +58,9 @@ watch(isWin, (): void => {
 });
 
 scoreStore.prepareScoreList();
-const scoreList = computed((): Map<number, Score> => {
-  return scoreStore.scoreList;
-});
+// const scoreList = computed((): Map<number, Score> => {
+//   return scoreStore.scoreList;
+// });
 </script>
 
 <template>
@@ -75,7 +75,6 @@ const scoreList = computed((): Map<number, Score> => {
     @close="closeModal"
     :time="gameTime"
     :isWin="isWin"
-    :scoreList="scoreList"
   ></score-modal>
 </template>
 
