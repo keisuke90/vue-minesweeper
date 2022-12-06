@@ -6,15 +6,16 @@ export interface Score {
   date: string;
 }
 
+export interface Record {
+  id: number;
+  easy: { time: number; date: string };
+  normal: { time: number; date: string };
+  hard: { time: number; date: string };
+}
+
 interface State {
-  recordTime: Map<
-    number,
-    {
-      easy: { time: number; date: string };
-      normal: { time: number; date: string };
-      hard: { time: number; date: string };
-    }
-  >;
+  scoreList: Map<number, Score>;
+  recordTime: Record;
   isLoading: boolean;
 }
 
@@ -28,7 +29,7 @@ async function getDatabase(): Promise<IDBDatabase> {
       request.onupgradeneeded = (event) => {
         const target = event.target as IDBRequest;
         const database = target.result as IDBDatabase;
-        database.createObjectStore("record", {
+        database.createObjectStore("score", {
           keyPath: "id",
           autoIncrement: true,
         });
@@ -51,14 +52,13 @@ export const useScoreStore = defineStore({
   id: "score",
   state: (): State => {
     return {
-      recordTime: new Map<
-        number,
-        {
-          easy: { time: number; date: string };
-          normal: { time: number; date: string };
-          hard: { time: number; date: string };
-        }
-      >(),
+      scoreList: new Map<number, Score>(),
+      recordTime: {
+        id: 1,
+        easy: { time: 0, date: "" },
+        normal: { time: 0, date: "" },
+        hard: { time: 0, date: "" },
+      },
       isLoading: true,
     };
   },
@@ -67,29 +67,22 @@ export const useScoreStore = defineStore({
     async prepareScoreList(): Promise<boolean> {
       const database = await getDatabase();
       const promise = new Promise<boolean>((resolve, reject) => {
-        const transaction = database.transaction("record", "readonly");
-        const objectStore = transaction.objectStore("record");
-        const recordTime = new Map<
-          number,
-          {
-            easy: { time: number; date: string };
-            normal: { time: number; date: string };
-            hard: { time: number; date: string };
-          }
-        >();
+        const transaction = database.transaction("score", "readwrite");
+        const objectStore = transaction.objectStore("score");
+        const scoreList = this.scoreList;
         const request = objectStore.openCursor();
         request.onsuccess = (event) => {
           const target = event.target as IDBRequest;
           const cursor = target.result as IDBCursorWithValue;
           if (cursor) {
             const id = cursor.key as number;
-            const time = cursor.value;
-            recordTime.set(id, time);
+            const time = cursor.value as Score;
+            scoreList.set(id, time);
             cursor.continue();
           }
         };
         transaction.oncomplete = () => {
-          this.recordTime = recordTime;
+          this.scoreList = scoreList;
           this.isLoading = false;
           resolve(true);
         };
@@ -106,8 +99,8 @@ export const useScoreStore = defineStore({
       };
       const database = await getDatabase();
       const promise = new Promise<boolean>((resolve, reject) => {
-        const transaction = database.transaction("scores", "readwrite");
-        const objectStore = transaction.objectStore("scores");
+        const transaction = database.transaction("score", "readwrite");
+        const objectStore = transaction.objectStore("score");
         objectStore.put(scoreAdd);
         transaction.oncomplete = () => {
           resolve(true);
