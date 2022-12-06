@@ -4,7 +4,7 @@ import MsGame from "./components/MsGame.vue";
 import ScoreModal from "./components/ScoreModal.vue";
 import { useScoreStore } from "@/stores/score";
 import { useMinesweeperStore } from "@/stores/minesweeper";
-import type { Score } from "@/stores/score";
+import type { Score, Record } from "@/stores/score";
 
 const scoreStore = useScoreStore();
 const minesweeperStore = useMinesweeperStore();
@@ -38,6 +38,37 @@ const recordClearTime = (score: Score): void => {
   });
 };
 
+const recordBestScore = (): void => {
+  if (minesweeperStore.gameLevel.level === "easy") {
+    if (scoreStore.recordTime.easy == null) {
+      scoreStore.recordTime.easy = gameTime.value;
+      return;
+    }
+    scoreStore.recordTime.easy =
+      gameTime.value > scoreStore.recordTime.easy
+        ? scoreStore.recordTime.easy
+        : gameTime.value;
+  } else if (minesweeperStore.gameLevel.level === "normal") {
+    if (scoreStore.recordTime.normal == null) {
+      scoreStore.recordTime.normal = gameTime.value;
+      return;
+    }
+    scoreStore.recordTime.easy =
+      gameTime.value > scoreStore.recordTime.normal
+        ? scoreStore.recordTime.normal
+        : gameTime.value;
+  } else {
+    if (scoreStore.recordTime.hard == null) {
+      scoreStore.recordTime.hard = gameTime.value;
+      return;
+    }
+    scoreStore.recordTime.easy =
+      gameTime.value > scoreStore.recordTime.hard
+        ? scoreStore.recordTime.hard
+        : gameTime.value;
+  }
+};
+
 const recordScore = (): Score => {
   const score: Score = { level: "", time: 0, date: "" };
   score.level = minesweeperStore.gameLevel.level;
@@ -51,6 +82,7 @@ const recordScore = (): Score => {
 
 watch(isWin, (): void => {
   if (isWin.value) {
+    recordBestScore();
     scoreStore.prepareScoreList();
     recordScore();
     recordClearTime(recordScore());
@@ -58,9 +90,9 @@ watch(isWin, (): void => {
 });
 
 scoreStore.prepareScoreList();
-// const scoreList = computed((): Map<number, Score> => {
-//   return scoreStore.scoreList;
-// });
+const recordTime = computed((): Record => {
+  return scoreStore.recordTime;
+});
 </script>
 
 <template>
@@ -75,6 +107,7 @@ scoreStore.prepareScoreList();
     @close="closeModal"
     :time="gameTime"
     :isWin="isWin"
+    :recordTime="recordTime"
   ></score-modal>
 </template>
 

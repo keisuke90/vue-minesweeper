@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { Score } from "@/stores/score";
+import type { Record } from "@/stores/score";
 
 interface Props {
   isVisible: boolean;
   isLoading: boolean;
   time: number;
   isWin: boolean;
+  recordTime: Record;
 }
 interface Emits {
   (event: "close"): void;
@@ -28,22 +29,18 @@ const close = (): void => {
     <div class="modal-content" v-show="isVisible">
       <p v-if="isLoading">データ取得中...</p>
       <p v-if="isWin">クリアタイム：{{ time }}</p>
-      <!-- <div class="score-table">
-        <tr class="score-header">
-          <th>No</th>
-          <th>レベル</th>
-          <th>タイム</th>
-          <th>日</th>
-        </tr>
-        <template v-for="(score, id) in scoreList" :key="id">
-          <tr class="score-data">
-            <td>{{ id + 1 }}</td>
-            <td>{{ score[1].level }}</td>
-            <td>{{ score[1].time }}</td>
-            <td>{{ score[1].date }}</td>
-          </tr>
-        </template>
-      </div> -->
+      <p>ベストタイム</p>
+      <tr>
+        <th>EASY</th>
+        <th>NORMAL</th>
+        <th>HARD</th>
+      </tr>
+      <tr>
+        <td>{{ recordTime.easy }}</td>
+        <td>{{ recordTime.normal }}</td>
+        <td>{{ recordTime.hard }}</td>
+      </tr>
+      <p>クリア履歴</p>
     </div>
   </teleport>
 </template>
@@ -90,5 +87,13 @@ const close = (): void => {
 .score-data {
   display: flex;
   justify-content: space-between;
+}
+
+th {
+  width: 80px;
+}
+td {
+  width: 80px;
+  text-align: center;
 }
 </style>

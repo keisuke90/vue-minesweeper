@@ -7,10 +7,9 @@ export interface Score {
 }
 
 export interface Record {
-  id: number;
-  easy: { time: number; date: string };
-  normal: { time: number; date: string };
-  hard: { time: number; date: string };
+  easy: number | null;
+  normal: number | null;
+  hard: number | null;
 }
 
 interface State {
@@ -54,10 +53,9 @@ export const useScoreStore = defineStore({
     return {
       scoreList: new Map<number, Score>(),
       recordTime: {
-        id: 1,
-        easy: { time: 0, date: "" },
-        normal: { time: 0, date: "" },
-        hard: { time: 0, date: "" },
+        easy: null,
+        normal: null,
+        hard: null,
       },
       isLoading: true,
     };
