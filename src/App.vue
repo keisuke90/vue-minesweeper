@@ -90,6 +90,9 @@ watch(isWin, (): void => {
 });
 
 scoreStore.prepareScoreList();
+const scoreList = computed((): Map<number, Score> => {
+  return scoreStore.scoreList;
+});
 const recordTime = computed((): Record => {
   return scoreStore.recordTime;
 });
@@ -108,6 +111,7 @@ const recordTime = computed((): Record => {
     :time="gameTime"
     :isWin="isWin"
     :recordTime="recordTime"
+    :scoreList="scoreList"
   ></score-modal>
 </template>
 

@@ -66,17 +66,17 @@ export const useScoreStore = defineStore({
     async prepareScoreList(): Promise<boolean> {
       const database = await getDatabase();
       const promise = new Promise<boolean>((resolve, reject) => {
-        const transaction = database.transaction("score", "readwrite");
+        const transaction = database.transaction("score", "readonly");
         const objectStore = transaction.objectStore("score");
-        const scoreList = this.scoreList;
+        const scoreList = new Map<number, Score>();
         const request = objectStore.openCursor();
         request.onsuccess = (event) => {
           const target = event.target as IDBRequest;
           const cursor = target.result as IDBCursorWithValue;
           if (cursor) {
             const id = cursor.key as number;
-            const time = cursor.value as Score;
-            scoreList.set(id, time);
+            const score = cursor.value as Score;
+            scoreList.set(id, score);
             cursor.continue();
           }
         };

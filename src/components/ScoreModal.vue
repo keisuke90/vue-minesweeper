@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Record } from "@/stores/score";
+import type { Score, Record } from "@/stores/score";
 
 interface Props {
   isVisible: boolean;
@@ -7,6 +7,7 @@ interface Props {
   time: number;
   isWin: boolean;
   recordTime: Record;
+  scoreList: Map<number, Score>;
 }
 interface Emits {
   (event: "close"): void;
@@ -28,19 +29,31 @@ const close = (): void => {
     ></div>
     <div class="modal-content" v-show="isVisible">
       <p v-if="isLoading">データ取得中...</p>
-      <p v-if="isWin">クリアタイム：{{ time }}</p>
-      <p>ベストタイム</p>
+      <p v-if="isWin" class="clearTime">🎉　クリアタイム：{{ time }}　🎉</p>
+      <p class="headline">ベストタイム</p>
       <tr>
         <th>EASY</th>
         <th>NORMAL</th>
         <th>HARD</th>
       </tr>
       <tr>
-        <td>{{ recordTime.easy }}</td>
-        <td>{{ recordTime.normal }}</td>
-        <td>{{ recordTime.hard }}</td>
+        <td>{{ recordTime.easy }}秒</td>
+        <td>{{ recordTime.normal }}秒</td>
+        <td>{{ recordTime.hard }}秒</td>
       </tr>
-      <p>クリア履歴</p>
+      <p class="headline">クリア履歴</p>
+      <tr>
+        <th>難易度</th>
+        <th>タイム</th>
+        <th>日</th>
+      </tr>
+      <template v-for="score in scoreList">
+        <tr>
+          <td>{{ score[1].level }}</td>
+          <td>{{ score[1].time }}秒</td>
+          <td>{{ score[1].date }}</td>
+        </tr>
+      </template>
     </div>
   </teleport>
 </template>
@@ -95,5 +108,15 @@ th {
 td {
   width: 80px;
   text-align: center;
+}
+.headline {
+  width: 80%;
+  text-align: center;
+  border-bottom: 1px solid black;
+}
+.clearTime {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 </style>
