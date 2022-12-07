@@ -60,6 +60,7 @@ export const useScoreStore = defineStore({
       isLoading: true,
     };
   },
+  persist: true,
   getters: {},
   actions: {
     async prepareScoreList(): Promise<boolean> {
