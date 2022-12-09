@@ -16,6 +16,7 @@ interface State {
   scoreList: Map<number, Score>;
   recordTime: Record;
   isLoading: boolean;
+  nextDeleteId: number;
 }
 
 let _database: IDBDatabase;
@@ -58,6 +59,7 @@ export const useScoreStore = defineStore({
         hard: null,
       },
       isLoading: true,
+      nextDeleteId: 0,
     };
   },
   persist: true,
@@ -107,6 +109,25 @@ export const useScoreStore = defineStore({
         transaction.onerror = (event) => {
           console.log("error: データ登録に失敗。", event);
           reject(new Error("error: データ登録に失敗。"));
+        };
+      });
+      return promise;
+    },
+    addNextDeleteId(): void {
+      this.nextDeleteId++;
+    },
+    async deleteScore(id: number): Promise<boolean> {
+      const database = await getDatabase();
+      const promise = new Promise<boolean>((resolve, reject) => {
+        const transaction = database.transaction("score", "readwrite");
+        const objectStore = transaction.objectStore("score");
+        objectStore.delete(id);
+        transaction.oncomplete = () => {
+          resolve(true);
+        };
+        transaction.onerror = (event) => {
+          console.log("error: データ削除に失敗。", event);
+          reject(new Error("error: データ削除に失敗。"));
         };
       });
       return promise;

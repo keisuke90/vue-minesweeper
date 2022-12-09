@@ -37,6 +37,18 @@ const recordClearTime = (score: Score): void => {
     console.log("登録失敗しました。", error);
   });
 };
+const nextDeleteId = computed((): number => {
+  return scoreStore.nextDeleteId;
+});
+const addNextDeleteId = (): void => {
+  scoreStore.addNextDeleteId();
+};
+const deleteScore = (id: number): void => {
+  const promise = scoreStore.deleteScore(id);
+  promise.catch((error: boolean) => {
+    console.log("削除に失敗しました。", error);
+  });
+};
 
 const recordBestScore = (): void => {
   if (minesweeperStore.gameLevel.level === "easy") {
@@ -86,11 +98,15 @@ watch(isWin, (): void => {
     scoreStore.prepareScoreList();
     recordScore();
     recordClearTime(recordScore());
+    addNextDeleteId();
+    if (nextDeleteId.value > 5) {
+      deleteScore(nextDeleteId.value - 5);
+    }
   }
 });
 
 scoreStore.prepareScoreList();
-const scoreList = computed((): Map<number, Score> => {
+const scoreList = computed((): Map<number, Score> | null => {
   return scoreStore.scoreList;
 });
 const recordTime = computed((): Record => {
