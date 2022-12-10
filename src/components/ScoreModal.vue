@@ -113,7 +113,9 @@ td {
   width: 80%;
   text-align: center;
   border-bottom: 1px solid black;
+  margin-top: 10px;
 }
+
 .clearTime {
   color: red;
   font-weight: bold;
