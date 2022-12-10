@@ -20,7 +20,7 @@ const game = computed((): number => {
 
 <template>
   <div class="status">
-    <MsStatusBox>
+    <MsStatusBox :title="'mines'">
       <p v-if="game === 0 || game === 1">
         {{ mines }}
       </p>
@@ -28,7 +28,7 @@ const game = computed((): number => {
       <p v-if="game === 3">WIN</p>
     </MsStatusBox>
     <div class="button" @click="reset">RESET</div>
-    <MsStatusBox>
+    <MsStatusBox :title="'time'">
       {{ time }}
     </MsStatusBox>
   </div>
