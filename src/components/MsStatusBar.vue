@@ -27,7 +27,7 @@ const game = computed((): number => {
       <p v-if="game === 2">LOSE</p>
       <p v-if="game === 3">WIN</p>
     </MsStatusBox>
-    <button @click="reset">reset</button>
+    <div class="button" @click="reset">RESET</div>
     <MsStatusBox>
       {{ time }}
     </MsStatusBox>
@@ -38,5 +38,21 @@ const game = computed((): number => {
 .status {
   display: flex;
   justify-content: space-between;
+}
+
+.button {
+  display: grid;
+  place-items: center;
+  height: 50px;
+  width: 50px;
+  font-size: 6px;
+  background-color: #fff;
+  color: black;
+  border: 1px solid black;
+}
+.button:hover {
+  cursor: pointer;
+  background-color: #40d73c;
+  color: #fff;
 }
 </style>
