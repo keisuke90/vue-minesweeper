@@ -7,7 +7,7 @@ vue.js の学習のために作ったシンプルなマインスイーパー。
 # 使用技術
 
 - 言語 ：TypeScript
-- フレームワーク：Vue.js（3 系）
+- フレームワーク：Vue.js
 - 状態管理 ：pinia
 - データベース ：IndexedDB
 
